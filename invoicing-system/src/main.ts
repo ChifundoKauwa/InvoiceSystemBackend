@@ -8,6 +8,13 @@ async function bootstrap() {
         logger: ['log', 'error', 'warn'],
     });
 
+    app.enableCors({
+        origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+        allowedHeaders: 'Content-Type, Authorization, X-Requested-With, Accept, Origin',
+        credentials: true,
+    });
+
     // Global prefix
     app.setGlobalPrefix(process.env.APP_PREFIX || 'api');
 
