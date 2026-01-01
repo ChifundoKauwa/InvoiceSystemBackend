@@ -1,9 +1,8 @@
-/**
- * APPLICATION LAYER: DTOs for Responses
- * 
- * Response models for use cases.
- * Safe to expose to API consumers.
- */
+
+ //APPLICATION LAYER: DTOs for Responses
+ 
+  //Response models for use cases.
+
 
 export class InvoiceItemDto {
     constructor(
