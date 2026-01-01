@@ -13,7 +13,7 @@ import { InvalidInvoiceDataError, EventPublishingError } from "../exceptions/App
  * 
  * Orchestrates creating a new draft invoice.
  * Validates business rules, constructs domain aggregate, and persists.
- * Does NOT enforce state transitions—that's domain responsibility.
+ 
  */
 @Injectable()
 export class CreateInvoiceUseCase {
@@ -57,7 +57,7 @@ export class CreateInvoiceUseCase {
             item => new InvoiceItemDto(
                 item.getId(),
                 item.getDescription(),
-                0, // quantity not exposed in getters, adjust as needed
+                0, // quantity not exposed in getters
                 0, // unitPrice not exposed
                 item.subtotal().getAmount(),
                 invoice.getCurrency()
