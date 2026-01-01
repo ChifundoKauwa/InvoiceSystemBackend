@@ -8,32 +8,14 @@ async function bootstrap() {
     logger: ['log', 'error', 'warn'],
   });
 
+ // CORS CONFIGURATION   
+app.enableCors({
+  origin: 'https://invoicing-system-blond.vercel.app',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+});
 
-   // CORS CONFIGURATION
-   //Explicit frontend origins
-   // Credentials enabled
-   
-   
-  const allowedOrigins = [
-    'http://localhost:3000',
-    'http://localhost:3001',
-    'https://invoicing-system-blond.vercel.app',
-  ];
-
-  app.enableCors({
-    origin: (origin, callback) => {
-      if (!origin) return callback(null, true);
-
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-
-      return callback(new Error('Not allowed by CORS'));
-    },
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-  });
 
   // Global API prefix
   app.setGlobalPrefix(process.env.APP_PREFIX || 'api');
