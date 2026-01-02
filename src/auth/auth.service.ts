@@ -33,6 +33,8 @@ export class AuthService {
       sub: user.id,
       email: user.email,
       role: user.role,
+      iat: Math.floor(Date.now() / 1000),
+      exp: Math.floor(Date.now() / 1000) + 3600, // 1 hour
     };
 
     const response = new LoginResponseDto();

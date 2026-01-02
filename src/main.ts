@@ -2,71 +2,64 @@ import { NestFactory, Reflector } from '@nestjs/core';
 import { ValidationPipe, ClassSerializerInterceptor } from '@nestjs/common';
 import { AppModule } from './app.module';
 import 'reflect-metadata';
-import { JwtAuthGuard } from './auth/guards/jwt.guard';
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule, {
-        logger: ['log', 'error', 'warn'],
-    });
+  const app = await NestFactory.create(AppModule, {
+    logger: ['log', 'error', 'warn'],
+  });
 
-    // CORS - Allow frontend from any origin (for development)
-    
-    const allowedOrigins = [
-        'http://localhost:3000',
-        'http://localhost:3001', 
-        'https://invoicesystembackend-1.onrender.com',
-        process.env.FRONTEND_URL,
-    ].filter(Boolean);
+  
+    //CORS CONFIGURATION
+  
+  const allowedOrigins = [
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'https://invoicing-system-blond.vercel.app',
+  ];
 
-    app.enableCors({
-        origin: (origin, callback) => {
-            // Allow requests with no origin (like mobile apps or curl requests)
-            if (!origin) return callback(null, true);
-            if (allowedOrigins.includes(origin)) {
-                callback(null, true);
-            } else {
-                //allow all origins
-                if (process.env.NODE_ENV === 'development') {
-                    callback(null, true);
-                } else {
-                    callback(new Error('Not allowed by CORS'));
-                }
-            }
-        },
-        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-        allowedHeaders: ['Content-Type', 'Authorization'],
-        credentials: true,
-    });
+  app.enableCors({
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
 
-    // Global prefix
-    app.setGlobalPrefix(process.env.APP_PREFIX || 'api');
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
 
-    // Global validation pipe
-    app.useGlobalPipes(
-        new ValidationPipe({
-            whitelist: true,
-            forbidNonWhitelisted: true,
-            transform: true,
-            transformOptions: {
-                enableImplicitConversion: true,
-            },
-        }),
-    );
+      return callback(new Error('Not allowed by CORS'));
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  });
 
-    // Global response serialization
-    app.useGlobalInterceptors(
-        new ClassSerializerInterceptor(app.get(Reflector)),
-    );
+  // Global API prefix
+  app.setGlobalPrefix(process.env.APP_PREFIX || 'api');
 
-    // JWT Guard 
-    app.useGlobalGuards(new JwtAuthGuard(app.get(Reflector)));
+  // Validation
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
+    }),
+  );
 
-    const port = process.env.APP_PORT || 3000;
-    await app.listen(port);
-    console.log(`Application started on port ${port}`);
+  // Serialization
+  app.useGlobalInterceptors(
+    new ClassSerializerInterceptor(app.get(Reflector)),
+  );
+
+  
+
+  const port = process.env.APP_PORT || 3000;
+  await app.listen(port);
+  console.log(`Application started on port ${port}`);
 }
 
 bootstrap().catch((err) => {
-    console.error('Failed to start application:', err);
-    process.exit(1);
+  console.error('Failed to start application:', err);
+  process.exit(1);
 });
