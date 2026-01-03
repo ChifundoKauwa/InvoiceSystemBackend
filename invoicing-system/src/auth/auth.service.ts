@@ -48,6 +48,8 @@ export class AuthService {
 
   async register(registerDto: RegisterRequestDto): Promise<RegisterResponseDto> {
     const user = await this.usersService.create(
+      registerDto.firstName,
+      registerDto.lastName,
       registerDto.email,
       registerDto.password,
       registerDto.role ?? UserRole.USER,
@@ -55,6 +57,8 @@ export class AuthService {
 
     const response = new RegisterResponseDto();
     response.id = user.id;
+    response.firstName = user.firstName;
+    response.lastName = user.lastName;
     response.email = user.email;
     response.role = user.role;
     response.createdAt = user.createdAt;

@@ -11,7 +11,7 @@ export class UsersService {
         private readonly userRepository: Repository<User>,
     ) {}
 
-    async create(email: string, password: string, role: UserRole = UserRole.USER): Promise<User> {
+    async create(firstName: string, lastName: string, email: string, password: string, role: UserRole = UserRole.USER): Promise<User> {
         const existingUser = await this.userRepository.findOne({ where: { email } });
         if (existingUser) {
             throw new ConflictException('User with this email already exists');
@@ -19,6 +19,8 @@ export class UsersService {
 
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = this.userRepository.create({
+            firstName,
+            lastName,
             email,
             password: hashedPassword,
             role,
