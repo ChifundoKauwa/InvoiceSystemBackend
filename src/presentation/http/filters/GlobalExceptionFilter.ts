@@ -1,4 +1,4 @@
-import { ExceptionFilter, Catch, ArgumentsHost, HttpStatus, Logger } from '@nestjs/common';
+import { ExceptionFilter, Catch, ArgumentsHost, HttpStatus, Logger, HttpException } from '@nestjs/common';
 import { Response } from 'express';
 import {
     InvoiceNotFoundError,
@@ -26,6 +26,24 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         let statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
         let message = 'An unexpected error occurred';
         let errorType = 'InternalServerError';
+
+        // Handle NestJS built-in HTTP exceptions first (like UnauthorizedException, BadRequestException, etc.)
+        if (exception instanceof HttpException) {
+            statusCode = exception.getStatus();
+            const exceptionResponse = exception.getResponse();
+            
+            if (typeof exceptionResponse === 'string') {
+                message = exceptionResponse;
+            } else if (typeof exceptionResponse === 'object' && exceptionResponse !== null) {
+                message = (exceptionResponse as any).message || exception.message;
+            }
+            
+            errorType = exception.constructor.name;
+            
+            // Return NestJS exception format directly
+            response.status(statusCode).json(exceptionResponse);
+            return;
+        }
 
         if (exception instanceof InvoiceNotFoundError) {
             statusCode = HttpStatus.NOT_FOUND;
