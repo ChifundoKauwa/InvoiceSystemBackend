@@ -3,6 +3,7 @@ import { config as loadEnv } from 'dotenv';
 import { resolve } from 'path';
 import { InvoiceEntity, InvoiceItemEntity } from './persistence/entities';
 import { User } from '../users/users.entity';
+import { SystemSettings } from '../admin/entities/system-settings.entity';
 
 /**
  * INFRASTRUCTURE LAYER: TypeORM Configuration
@@ -45,7 +46,7 @@ export const getTypeOrmConfig = (): DataSourceOptions => {
     return {
         type: 'postgres',
         url: databaseUrl,
-        entities: [InvoiceEntity, InvoiceItemEntity, User],
+        entities: [InvoiceEntity, InvoiceItemEntity, User, SystemSettings],
         synchronize: !isProduction, // Only auto-sync in development
         migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
         migrationsRun: true, // Auto-run migrations on startup

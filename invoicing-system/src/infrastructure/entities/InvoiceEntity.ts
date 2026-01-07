@@ -17,6 +17,9 @@ export class InvoiceEntity {
     @PrimaryColumn()
     id!: string;
 
+    @Column({ nullable: true })
+    userId?: string;
+
     @Column()
     currency!: string;
 
