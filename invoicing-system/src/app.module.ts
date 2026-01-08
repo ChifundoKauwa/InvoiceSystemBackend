@@ -10,6 +10,7 @@ import { GlobalExceptionFilter } from './presentation/http/filters';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { AdminModule } from './admin/admin.module';
+import { ClientModule } from './client/client.module';
 import { JwtAuthGuard } from './auth/guards/jwt.guard';
 import { RolesGuard } from './auth/guards/roles.guard';
 
@@ -37,6 +38,7 @@ import { RolesGuard } from './auth/guards/roles.guard';
         AuthModule,
         UsersModule,
         AdminModule,
+        ClientModule,
         InvoiceModule,
     ],
     controllers: [AppController],

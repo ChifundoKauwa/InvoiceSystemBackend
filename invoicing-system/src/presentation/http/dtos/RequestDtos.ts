@@ -32,6 +32,10 @@ export class CreateInvoiceRequestDto {
 
     @IsString()
     @IsNotEmpty()
+    clientId!: string;
+
+    @IsString()
+    @IsNotEmpty()
     currency!: string;
 
     @ArrayNotEmpty()

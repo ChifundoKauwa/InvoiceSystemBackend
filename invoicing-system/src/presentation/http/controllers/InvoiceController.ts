@@ -45,6 +45,7 @@ export class InvoiceController {
     async createInvoice(@Body() dto: CreateInvoiceRequestDto): Promise<InvoiceDto> {
         const command = new CreateInvoiceCommand(
             dto.invoiceId,
+            dto.clientId,
             dto.currency,
             dto.items
         );

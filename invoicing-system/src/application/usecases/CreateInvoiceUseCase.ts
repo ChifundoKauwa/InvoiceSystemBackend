@@ -35,7 +35,7 @@ export class CreateInvoiceUseCase {
                 );
             });
 
-            const invoice = new Invoice(command.invoiceId, command.currency, items);
+            const invoice = new Invoice(command.invoiceId, command.clientId, command.currency, items);
 
             // Persist to repository
             await this.invoiceRepo.save(invoice);

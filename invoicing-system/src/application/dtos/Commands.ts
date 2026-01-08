@@ -43,6 +43,7 @@ export class VoidInvoiceCommand {
 export class CreateInvoiceCommand {
     constructor(
         public readonly invoiceId: string,
+        public readonly clientId: string,
         public readonly currency: string,
         public readonly items: Array<{
             id: string;
@@ -53,6 +54,9 @@ export class CreateInvoiceCommand {
     ) {
         if (!invoiceId || invoiceId.trim().length === 0) {
             throw new Error("invoiceId is required");
+        }
+        if (!clientId || clientId.trim().length === 0) {
+            throw new Error("clientId is required");
         }
         if (!currency || currency.trim().length === 0) {
             throw new Error("currency is required");

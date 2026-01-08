@@ -21,6 +21,9 @@ export class InvoiceEntity {
     userId?: string;
 
     @Column()
+    clientId!: string;
+
+    @Column()
     currency!: string;
 
     @Column()

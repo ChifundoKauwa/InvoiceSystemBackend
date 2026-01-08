@@ -13,28 +13,34 @@ import { deepFreeze } from "../shared/deepFreeze";
  * - State transitions are controlled
  * - Events are recorded for all changes
  * - Immutable after state transitions
+ * - Must reference a valid client
  */
 export class Invoice {
     private state: InvoiceStatus = InvoiceStatus.draft;
     private readonly id: string;
+    private readonly clientId: string;
     private readonly items: InvoiceItem[] = [];
     private events: DomainEvent[] = [];
     private issueAt: Date | undefined = undefined;
     private dueAt: Date | undefined = undefined;
     private readonly currency: string;
 
-    constructor(id: string, currency: string, items: InvoiceItem[] = [], events: DomainEvent[] = []) {
+    constructor(id: string, clientId: string, currency: string, items: InvoiceItem[] = [], events: DomainEvent[] = []) {
         if (!currency || currency.trim().length === 0) {
             throw new Error("currency is required");
         }
         if (!id || id.trim().length === 0) {
             throw new Error("id is required");
         }
+        if (!clientId || clientId.trim().length === 0) {
+            throw new Error("clientId is required");
+        }
         if (items && items.some(i => !i.subtotal().sameCurrency(Money.zero(currency)))) {
             throw new Error("all items must have the same currency as the invoice");
         }
         this.currency = currency;
         this.id = id;
+        this.clientId = clientId;
         if (items) {
             this.items.push(...items);
         }
@@ -111,6 +117,10 @@ export class Invoice {
 
     getId(): string {
         return this.id;
+    }
+
+    getClientId(): string {
+        return this.clientId;
     }
 
     getCurrency(): string {

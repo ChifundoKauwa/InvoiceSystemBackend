@@ -27,6 +27,7 @@ export class InvoiceMapper {
 
         return new InvoiceEntity({
             id: invoice.getId(),
+            clientId: invoice.getClientId(),
             status: invoice.getStatus(),
             currency: invoice.getCurrency(),
             totalAmount: invoice.getTotal().getAmount(),
@@ -45,9 +46,10 @@ export class InvoiceMapper {
             this.itemToDomain(itemEntity)
         );
 
-        // Reconstruct aggregate with items
+        // Reconstruct aggregate with items and clientId
         const invoice = new Invoice(
             entity.id,
+            entity.clientId,
             entity.currency,
             items,
             [] // Events are not persisted; new ones captured during operations

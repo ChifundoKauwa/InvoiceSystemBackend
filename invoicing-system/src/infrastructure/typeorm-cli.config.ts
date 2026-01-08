@@ -4,6 +4,7 @@ import { resolve } from 'path';
 import { InvoiceEntity, InvoiceItemEntity } from './persistence/entities';
 import { User } from '../users/users.entity';
 import { SystemSettings } from '../admin/entities/system-settings.entity';
+import { ClientEntity } from './entities/ClientEntity';
 
 /**
  * TypeORM CLI Configuration
@@ -31,7 +32,7 @@ const isLocalDb = databaseUrl.includes('localhost') || databaseUrl.includes('127
 export default new DataSource({
     type: 'postgres',
     url: databaseUrl,
-    entities: [InvoiceEntity, InvoiceItemEntity, User, SystemSettings],
+    entities: [InvoiceEntity, InvoiceItemEntity, User, SystemSettings, ClientEntity],
     migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
     synchronize: false, // Never auto-sync when running migrations
     logging: true,
