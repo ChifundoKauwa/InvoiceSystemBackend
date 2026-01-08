@@ -23,16 +23,16 @@ export class InvoiceItemEntity {
     @Column('varchar', { length: 255 })
     description!: string;
 
-    @Column('int')
+    @Column('decimal', { precision: 10, scale: 2 })
     quantity!: number;
 
-    @Column('bigint')
+    @Column('decimal', { precision: 10, scale: 2 })
     unitPriceAmount!: number;
 
     @Column('varchar', { length: 3 })
     currency!: string;
 
-    @Column('bigint')
+    @Column('decimal', { precision: 10, scale: 2 })
     subtotalAmount!: number;
 
     @ManyToOne(() => InvoiceEntity, (invoice) => invoice.items, {
