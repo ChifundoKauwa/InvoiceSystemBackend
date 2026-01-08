@@ -10,8 +10,8 @@ export class AdminInvoiceResponse {
     userEmail?: string;
     userName?: string;
     currency: string;
-    state: string;
-    issueAt?: Date;
+    status: string;
+    issuedAt?: Date;
     dueAt?: Date;
     items: InvoiceItem[];
     totalAmount: number;
