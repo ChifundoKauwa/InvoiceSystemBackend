@@ -33,21 +33,18 @@ export class AdminService {
 
         // Calculate total revenue from PAID invoices
         const paidInvoices = await this.invoiceRepository.find({
-            where: { state: 'paid' },
+            where: { status: 'paid' },
             relations: ['items'],
         });
 
         let totalRevenue = 0;
         paidInvoices.forEach(invoice => {
-            const invoiceTotal = invoice.items.reduce((sum, item) => {
-                return sum + item.amount;
-            }, 0);
-            totalRevenue += invoiceTotal;
+            totalRevenue += invoice.totalAmount;
         });
 
         // Count overdue invoices
         const overdueInvoices = await this.invoiceRepository.count({
-            where: { state: 'overdue' },
+            where: { status: 'overdue' },
         });
 
         // Get recent users (last 5)
@@ -59,9 +56,9 @@ export class AdminService {
 
         // Get recent invoices (last 5)
         const recentInvoices = await this.invoiceRepository.find({
-            order: { issueAt: 'DESC' },
+            order: { issuedAt: 'DESC' },
             take: 5,
-            select: ['id', 'currency', 'state', 'issueAt'],
+            select: ['id', 'currency', 'status', 'issuedAt'],
         });
 
         return {
@@ -80,8 +77,8 @@ export class AdminService {
             recentInvoices: recentInvoices.map(invoice => ({
                 id: invoice.id,
                 currency: invoice.currency,
-                state: invoice.state,
-                issueAt: invoice.issueAt,
+                status: invoice.status,
+                issuedAt: invoice.issuedAt,
             })),
         };
     }
@@ -148,16 +145,14 @@ export class AdminService {
     async getAllInvoices(): Promise<AdminInvoicesListResponse> {
         const invoices = await this.invoiceRepository.find({
             relations: ['items'],
-            order: { issueAt: 'DESC' },
+            order: { issuedAt: 'DESC' },
         });
 
         const adminInvoices: AdminInvoiceResponse[] = [];
 
         for (const invoice of invoices) {
-            // Calculate total amount
-            const totalAmount = invoice.items.reduce((sum, item) => {
-                return sum + item.amount;
-            }, 0);
+            // Use totalAmount from entity
+            const totalAmount = invoice.totalAmount;
 
             // Get user info if userId exists
             let userEmail = 'Unknown';
@@ -179,13 +174,13 @@ export class AdminService {
                 userEmail,
                 userName,
                 currency: invoice.currency,
-                state: invoice.state,
-                issueAt: invoice.issueAt,
+                status: invoice.status,
+                issuedAt: invoice.issuedAt,
                 dueAt: invoice.dueAt,
                 items: invoice.items.map(item => ({
                     description: item.description,
-                    quantity: 1, // Default since entity only has amount
-                    unitPrice: item.amount,
+                    quantity: item.quantity,
+                    unitPrice: item.unitPriceAmount,
                 })),
                 totalAmount,
             });
