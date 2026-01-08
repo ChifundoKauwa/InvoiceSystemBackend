@@ -18,13 +18,19 @@ export class InvoiceEntity {
     @PrimaryColumn('varchar', { length: 36 })
     id!: string;
 
+    @Column('varchar', { nullable: true })
+    userId?: string;
+
+    @Column('varchar', { nullable: false })
+    clientId!: string;
+
     @Column('varchar', { length: 10 })
     status!: string; // DRAFT, ISSUED, OVERDUE, PAID, VOIDED
 
     @Column('varchar', { length: 3 })
     currency!: string; // ISO 4217 currency code
 
-    @Column('bigint', { nullable: true })
+    @Column('decimal', { precision: 10, scale: 2, nullable: true })
     totalAmount!: number | null;
 
     @Column('timestamp', { nullable: true })
