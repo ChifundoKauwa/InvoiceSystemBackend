@@ -14,8 +14,8 @@ export class SystemStatsResponse {
     recentInvoices?: Array<{
         id: string;
         currency: string;
-        state: string;
+        status: string;
         createdAt?: Date;
-        issueAt?: Date;
+        issuedAt?: Date;
     }>;
 }
