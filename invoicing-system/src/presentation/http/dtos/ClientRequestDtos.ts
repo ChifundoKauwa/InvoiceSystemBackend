@@ -6,8 +6,8 @@ import { IsString, IsNotEmpty, IsEmail, IsOptional } from 'class-validator';
 
 export class CreateClientRequestDto {
     @IsString()
-    @IsNotEmpty()
-    clientId!: string;
+    @IsOptional()
+    clientId?: string;
 
     @IsString()
     @IsNotEmpty()
