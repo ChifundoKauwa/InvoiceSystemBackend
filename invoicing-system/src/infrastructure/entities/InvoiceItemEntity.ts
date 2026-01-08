@@ -13,11 +13,29 @@ export class InvoiceItemEntity {
     id!: string;
 
     @Column()
+    invoiceId!: string;
+
+    @Column()
     description!: string;
 
-    @Column("decimal")
-    amount!: number;
+    @Column("decimal", { precision: 10, scale: 2 })
+    quantity!: number;
+
+    @Column("decimal", { precision: 10, scale: 2 })
+    unitPriceAmount!: number;
+
+    @Column()
+    currency!: string;
+
+    @Column("decimal", { precision: 10, scale: 2 })
+    subtotalAmount!: number;
 
     @ManyToOne(() => InvoiceEntity, invoice => invoice.items)
     invoice!: InvoiceEntity;
+
+    constructor(partial?: Partial<InvoiceItemEntity>) {
+        if (partial) {
+            Object.assign(this, partial);
+        }
+    }
 }
