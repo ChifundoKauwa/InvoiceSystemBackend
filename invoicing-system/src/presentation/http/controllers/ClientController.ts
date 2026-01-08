@@ -31,8 +31,11 @@ export class ClientController {
     @Roles(UserRole.MANAGER, UserRole.ADMIN)
     @HttpCode(HttpStatus.CREATED)
     async createClient(@Body() dto: CreateClientRequestDto) {
+        // Generate clientId if not provided
+        const clientId = dto.clientId || `CLI-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+        
         const command = new CreateClientCommand(
-            dto.clientId,
+            clientId,
             dto.name,
             dto.email,
             dto.phone,
