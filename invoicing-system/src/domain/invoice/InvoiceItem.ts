@@ -39,6 +39,14 @@ export class InvoiceItem {
         return this.description;
     }
 
+    getQuantity(): number {
+        return this.quantity;
+    }
+
+    getUnitPrice(): Money {
+        return this.unitprice;
+    }
+
     subtotal(): Money {
         let totalAmount = Money.zero(this.unitprice.getCurrency());
         for (let i = 0; i < this.quantity; i++) {
