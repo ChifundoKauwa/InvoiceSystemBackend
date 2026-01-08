@@ -73,8 +73,8 @@ export class InvoiceMapper {
             id: item.getId(),
             invoiceId,
             description: item.getDescription(),
-            quantity: 0, // Not exposed by getter; store full object if needed
-            unitPriceAmount: 0, // Not exposed by getter
+            quantity: item.getQuantity(),
+            unitPriceAmount: item.getUnitPrice().getAmount(),
             currency,
             subtotalAmount: item.subtotal().getAmount(),
         });
