@@ -13,15 +13,13 @@ export class CreateClientCommand {
         public readonly address?: string,
         public readonly taxId?: string
     ) {
-        if (!clientId || clientId.trim().length === 0) {
-            throw new Error("clientId is required");
-        }
         if (!name || name.trim().length === 0) {
             throw new Error("name is required");
         }
         if (!email || email.trim().length === 0) {
             throw new Error("email is required");
         }
+        // clientId is validated/generated at controller level
     }
 }
 
