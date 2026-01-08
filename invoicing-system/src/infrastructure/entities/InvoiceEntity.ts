@@ -27,10 +27,13 @@ export class InvoiceEntity {
     currency!: string;
 
     @Column()
-    state!: string;
+    status!: string;
+
+    @Column("decimal", { precision: 10, scale: 2 })
+    totalAmount!: number;
 
     @Column({ type: "timestamp", nullable: true })
-    issueAt?: Date;
+    issuedAt?: Date;
 
     @Column({ type: "timestamp", nullable: true })
     dueAt?: Date;
@@ -40,4 +43,10 @@ export class InvoiceEntity {
         eager: true
     })
     items!: InvoiceItemEntity[];
+
+    constructor(partial?: Partial<InvoiceEntity>) {
+        if (partial) {
+            Object.assign(this, partial);
+        }
+    }
 }
