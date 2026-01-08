@@ -84,9 +84,9 @@ export class AddAdminFeatures1736270000000 implements MigrationInterface {
             true
         );
 
-        // Insert default settings
+        // Insert default settings (using lowercase column names for PostgreSQL)
         await queryRunner.query(`
-            INSERT INTO system_settings (id, siteName, siteEmail, invoicePrefix, defaultCurrency, defaultDueDays, defaultUserRole, allowRegistration, requireEmailVerification, enableNotifications, enableBackups)
+            INSERT INTO system_settings (id, "siteName", "siteEmail", "invoicePrefix", "defaultCurrency", "defaultDueDays", "defaultUserRole", "allowRegistration", "requireEmailVerification", "enableNotifications", "enableBackups")
             VALUES (1, 'Invoice System', 'admin@invoicesystem.com', 'INV', 'USD', 30, 'user', true, false, true, false)
             ON CONFLICT (id) DO NOTHING;
         `);
