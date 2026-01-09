@@ -1,5 +1,5 @@
 import { Entity, PrimaryColumn, Column, ManyToOne } from "typeorm";
-import { InvoiceEntity } from "./InvoiceEntity";
+import { InvoiceEntity } from "../persistence/entities/InvoiceEntity";
 
 /**
  * Persistence Layer: Database representation of InvoiceItem

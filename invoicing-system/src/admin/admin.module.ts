@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AdminController } from './admin.controller';
 import { AdminService } from './admin.service';
 import { User } from '../users/users.entity';
-import { InvoiceEntity } from '../infrastructure/entities/InvoiceEntity';
+import { InvoiceEntity } from '../infrastructure/persistence/entities/InvoiceEntity';
 import { SystemSettings } from './entities/system-settings.entity';
 
 /**

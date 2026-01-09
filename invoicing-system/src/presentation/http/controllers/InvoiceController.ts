@@ -43,6 +43,16 @@ export class InvoiceController {
     @Roles(UserRole.MANAGER, UserRole.ADMIN)
     @HttpCode(HttpStatus.CREATED)
     async createInvoice(@Body() dto: CreateInvoiceRequestDto): Promise<InvoiceDto> {
+        // Debug: Log the incoming request
+        console.log('=== CREATE INVOICE REQUEST ===');
+        console.log('Raw DTO:', JSON.stringify(dto, null, 2));
+        console.log('DTO fields:', Object.keys(dto));
+        console.log('invoiceId:', dto.invoiceId);
+        console.log('clientId:', dto.clientId);
+        console.log('currency:', dto.currency);
+        console.log('items:', dto.items);
+        console.log('==============================');
+        
         const command = new CreateInvoiceCommand(
             dto.invoiceId,
             dto.clientId,

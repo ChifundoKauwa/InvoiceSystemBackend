@@ -2,7 +2,7 @@ import { Injectable, NotFoundException, BadRequestException, ForbiddenException 
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User, UserRole } from '../users/users.entity';
-import { InvoiceEntity } from '../infrastructure/entities/InvoiceEntity';
+import { InvoiceEntity } from '../infrastructure/persistence/entities/InvoiceEntity';
 import { SystemSettings } from './entities/system-settings.entity';
 import { SystemStatsResponse } from './dtos/system-stats.dto';
 import { UsersListResponse, UserResponse } from './dtos/users-list.dto';
@@ -39,7 +39,7 @@ export class AdminService {
 
         let totalRevenue = 0;
         paidInvoices.forEach(invoice => {
-            totalRevenue += invoice.totalAmount;
+            totalRevenue += invoice.totalAmount ?? 0;
         });
 
         // Count overdue invoices
@@ -78,7 +78,7 @@ export class AdminService {
                 id: invoice.id,
                 currency: invoice.currency,
                 status: invoice.status,
-                issuedAt: invoice.issuedAt,
+                issuedAt: invoice.issuedAt ?? undefined,
             })),
         };
     }
@@ -175,14 +175,14 @@ export class AdminService {
                 userName,
                 currency: invoice.currency,
                 status: invoice.status,
-                issuedAt: invoice.issuedAt,
-                dueAt: invoice.dueAt,
+                issuedAt: invoice.issuedAt ?? undefined,
+                dueAt: invoice.dueAt ?? undefined,
                 items: invoice.items.map(item => ({
                     description: item.description,
                     quantity: item.quantity,
                     unitPrice: item.unitPriceAmount,
                 })),
-                totalAmount,
+                totalAmount: totalAmount ?? 0,
             });
         }
 
