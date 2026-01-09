@@ -1,5 +1,5 @@
-import { IsString, IsNotEmpty, IsDate, ArrayNotEmpty, ValidateNested } from 'class-validator';
-import { Type } from 'class-transformer';
+import { IsString, IsNotEmpty, IsDate, ArrayNotEmpty, ValidateNested, IsOptional } from 'class-validator';
+import { Type, Transform } from 'class-transformer';
 
 /**
  * PRESENTATION LAYER: HTTP Request DTOs
@@ -26,12 +26,10 @@ export class CreateInvoiceItemDto {
 }
 
 export class CreateInvoiceRequestDto {
+    // invoiceNumber is NOT sent by frontend - backend generates it
+    
     @IsString()
-    @IsNotEmpty()
-    invoiceId!: string;
-
-    @IsString()
-    @IsNotEmpty()
+    @IsNotEmpty({ message: 'Client is required' })
     clientId!: string;
 
     @IsString()

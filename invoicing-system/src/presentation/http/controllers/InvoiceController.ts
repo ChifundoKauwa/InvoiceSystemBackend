@@ -43,23 +43,39 @@ export class InvoiceController {
     @Roles(UserRole.MANAGER, UserRole.ADMIN)
     @HttpCode(HttpStatus.CREATED)
     async createInvoice(@Body() dto: CreateInvoiceRequestDto): Promise<InvoiceDto> {
-        // Debug: Log the incoming request
+        // Generate unique invoice number with retry logic
+        const invoiceNumber = this.generateInvoiceNumber();
+        
         console.log('=== CREATE INVOICE REQUEST ===');
-        console.log('Raw DTO:', JSON.stringify(dto, null, 2));
-        console.log('DTO fields:', Object.keys(dto));
-        console.log('invoiceId:', dto.invoiceId);
-        console.log('clientId:', dto.clientId);
-        console.log('currency:', dto.currency);
-        console.log('items:', dto.items);
+        console.log('Generated Invoice Number:', invoiceNumber);
+        console.log('Client ID:', dto.clientId);
+        console.log('Currency:', dto.currency);
+        console.log('Items:', dto.items?.length);
         console.log('==============================');
         
-        const command = new CreateInvoiceCommand(
-            dto.invoiceId,
-            dto.clientId,
-            dto.currency,
-            dto.items
-        );
-        return this.createInvoiceUseCase.execute(command);
+        try {
+            const command = new CreateInvoiceCommand(
+                invoiceNumber,
+                dto.clientId,
+                dto.currency,
+                dto.items
+            );
+            return await this.createInvoiceUseCase.execute(command);
+        } catch (error: any) {
+            // If duplicate key error, retry with new invoice number (extremely rare)
+            if (error.code === '23505' || error.message?.includes('duplicate')) {
+                console.warn('Invoice number collision detected, retrying...');
+                const retryInvoiceNumber = this.generateInvoiceNumber();
+                const command = new CreateInvoiceCommand(
+                    retryInvoiceNumber,
+                    dto.clientId,
+                    dto.currency,
+                    dto.items
+                );
+                return await this.createInvoiceUseCase.execute(command);
+            }
+            throw error;
+        }
     }
 
     /**
@@ -115,5 +131,21 @@ export class InvoiceController {
     async voidInvoice(@Param('id') invoiceId: string): Promise<InvoiceDto> {
         const command = new VoidInvoiceCommand(invoiceId);
         return this.voidInvoiceUseCase.execute(command);
+    }
+
+    /**
+     * Generate unique invoice number
+     * Format: INV-YYYYMMDD-NNNN
+     * Backend is single source of truth for invoice numbers
+     */
+    private generateInvoiceNumber(): string {
+        const date = new Date();
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const timestamp = Date.now();
+        const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
+        
+        return `INV-${year}${month}${day}-${random}-${timestamp}`;
     }
 }

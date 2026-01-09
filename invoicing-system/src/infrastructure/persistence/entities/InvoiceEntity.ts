@@ -9,14 +9,15 @@ import { InvoiceItemEntity } from './InvoiceItemEntity';
  * This is the "read model" - optimized for queries, not business logic.
  * 
  * Invariants:
+ * - id (invoice number) is PRIMARY KEY - enforces UNIQUENESS at DB level
  * - status must be one of: DRAFT, ISSUED, OVERDUE, PAID, VOIDED
  * - currency cannot be null
  * - dueAt must be null if status is DRAFT
  */
 @Entity('invoices')
 export class InvoiceEntity {
-    @PrimaryColumn('varchar', { length: 36 })
-    id!: string;
+    @PrimaryColumn('varchar', { length: 100, unique: true })
+    id!: string; // Invoice Number - UNIQUE constraint enforced
 
     @Column('varchar', { nullable: true })
     userId?: string;
