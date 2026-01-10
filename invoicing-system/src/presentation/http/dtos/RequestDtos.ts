@@ -21,8 +21,11 @@ export class CreateInvoiceItemDto {
     @IsNotEmpty()
     @Transform(({ value }) => {
         if (typeof value === 'string') {
-            const parsed = parseFloat(value);
+            const parsed = parseInt(value, 10);
             return isNaN(parsed) ? value : parsed;
+        }
+        if (typeof value === 'number') {
+            return Math.floor(value);
         }
         return value;
     })
@@ -33,6 +36,9 @@ export class CreateInvoiceItemDto {
         if (typeof value === 'string') {
             const parsed = parseFloat(value);
             return isNaN(parsed) ? value : parsed;
+        }
+        if (typeof value === 'number') {
+            return value;
         }
         return value;
     })
