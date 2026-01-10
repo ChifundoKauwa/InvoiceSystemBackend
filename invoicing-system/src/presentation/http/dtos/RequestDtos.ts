@@ -11,8 +11,8 @@ import { Type, Transform } from 'class-transformer';
 
 export class CreateInvoiceItemDto {
     @IsString()
-    @IsNotEmpty()
-    id!: string;
+    @IsOptional()
+    id?: string;
 
     @IsString()
     @IsNotEmpty()

@@ -46,11 +46,19 @@ export class InvoiceController {
         // Generate unique invoice number with retry logic
         const invoiceNumber = this.generateInvoiceNumber();
         
+        // Ensure all items have IDs (generate if not provided by frontend)
+        const itemsWithIds = dto.items.map((item, index) => ({
+            id: item.id || this.generateItemId(invoiceNumber, index),
+            description: item.description,
+            quantity: item.quantity,
+            unitPriceAmount: item.unitPriceAmount,
+        }));
+        
         console.log('=== CREATE INVOICE REQUEST ===');
         console.log('Generated Invoice Number:', invoiceNumber);
         console.log('Client ID:', dto.clientId);
         console.log('Currency:', dto.currency);
-        console.log('Items:', dto.items?.length);
+        console.log('Items:', itemsWithIds?.length);
         console.log('==============================');
         
         try {
@@ -58,7 +66,7 @@ export class InvoiceController {
                 invoiceNumber,
                 dto.clientId,
                 dto.currency,
-                dto.items
+                itemsWithIds
             );
             return await this.createInvoiceUseCase.execute(command);
         } catch (error: any) {
@@ -66,11 +74,17 @@ export class InvoiceController {
             if (error.code === '23505' || error.message?.includes('duplicate')) {
                 console.warn('Invoice number collision detected, retrying...');
                 const retryInvoiceNumber = this.generateInvoiceNumber();
+                const retryItemsWithIds = dto.items.map((item, index) => ({
+                    id: item.id || this.generateItemId(retryInvoiceNumber, index),
+                    description: item.description,
+                    quantity: item.quantity,
+                    unitPriceAmount: item.unitPriceAmount,
+                }));
                 const command = new CreateInvoiceCommand(
                     retryInvoiceNumber,
                     dto.clientId,
                     dto.currency,
-                    dto.items
+                    retryItemsWithIds
                 );
                 return await this.createInvoiceUseCase.execute(command);
             }
@@ -147,5 +161,14 @@ export class InvoiceController {
         const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
         
         return `INV-${year}${month}${day}-${random}-${timestamp}`;
+    }
+
+    /**
+     * Generate unique item ID
+     * Format: ITEM-{invoiceNumber}-{index}
+     * Backend is single source of truth for item IDs
+     */
+    private generateItemId(invoiceNumber: string, index: number): string {
+        return `ITEM-${invoiceNumber}-${index}`;
     }
 }
