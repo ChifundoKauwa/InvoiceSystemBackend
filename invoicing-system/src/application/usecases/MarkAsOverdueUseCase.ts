@@ -46,8 +46,8 @@ export class MarkAsOverdueUseCase {
             (item: any) => new InvoiceItemDto(
                 item.getId(),
                 item.getDescription(),
-                0,
-                0,
+                item.getQuantity(),
+                item.getUnitPrice().getAmount(),
                 item.subtotal().getAmount(),
                 invoice.getCurrency()
             )

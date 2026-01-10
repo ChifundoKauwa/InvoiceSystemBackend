@@ -57,8 +57,8 @@ export class CreateInvoiceUseCase {
             item => new InvoiceItemDto(
                 item.getId(),
                 item.getDescription(),
-                0, // quantity not exposed in getters
-                0, // unitPrice not exposed
+                item.getQuantity(),
+                item.getUnitPrice().getAmount(),
                 item.subtotal().getAmount(),
                 invoice.getCurrency()
             )
