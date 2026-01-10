@@ -43,6 +43,12 @@ export class InvoiceController {
     @Roles(UserRole.MANAGER, UserRole.ADMIN)
     @HttpCode(HttpStatus.CREATED)
     async createInvoice(@Body() dto: CreateInvoiceRequestDto): Promise<InvoiceDto> {
+        // Log incoming request for debugging
+        console.log('=== INCOMING CREATE INVOICE REQUEST ===');
+        console.log('DTO:', JSON.stringify(dto, null, 2));
+        console.log('Items received:', dto.items);
+        console.log('=======================================');
+        
         // Generate unique invoice number with retry logic
         const invoiceNumber = this.generateInvoiceNumber();
         

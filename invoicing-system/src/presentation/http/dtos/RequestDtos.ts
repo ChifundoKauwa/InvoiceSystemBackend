@@ -19,9 +19,23 @@ export class CreateInvoiceItemDto {
     description!: string;
 
     @IsNotEmpty()
+    @Transform(({ value }) => {
+        if (typeof value === 'string') {
+            const parsed = parseFloat(value);
+            return isNaN(parsed) ? value : parsed;
+        }
+        return value;
+    })
     quantity!: number;
 
     @IsNotEmpty()
+    @Transform(({ value }) => {
+        if (typeof value === 'string') {
+            const parsed = parseFloat(value);
+            return isNaN(parsed) ? value : parsed;
+        }
+        return value;
+    })
     unitPriceAmount!: number;
 }
 
